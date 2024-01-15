@@ -8,15 +8,28 @@ function App() {
   const [isRunning, setIsRunning] = useState(false);
   const [isWorkTime, setIsWorkTime] = useState(true);
   const [workSessions, setWorkSessions] = useState(0);
+  const [userWorkMinutes, setUserWorkMinutes] = useState(25);
+  const [userBreakMinutes, setUserBreakMinutes] = useState(5);
 
   const startTimer = () => setIsRunning(true);
   const stopTimer = () => setIsRunning(false);
   const resetTimer = () => {
-    setMinutes(25);
+    setMinutes(userWorkMinutes);
     setSeconds(0);
     setIsRunning(false);
   };
-  const switchTimer = () => setIsWorkTime(!isWorkTime);
+
+  const handleWorkMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserWorkMinutes(Number(e.target.value));
+  };
+  const handleBreakMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserBreakMinutes(Number(e.target.value));
+  };
+
+  const switchTimer = () => {
+    setIsWorkTime(!isWorkTime);
+    setMinutes(isWorkTime ? userBreakMinutes : userWorkMinutes);
+  };
 
   useEffect(() => {
     setDisplayTime(
@@ -27,7 +40,6 @@ function App() {
   }, [minutes, seconds]);
 
   useEffect(() => {
-
     let interval: number;
     if (isRunning) {
       interval = window.setInterval(() => {
@@ -51,6 +63,16 @@ function App() {
   return (
     <div className='App'>
       <h1>Pomodoro Timer</h1>
+      <input
+        type='number'
+        value={userWorkMinutes}
+        onChange={handleWorkMinutesChange}
+      />
+      <input
+        type='number'
+        value={userBreakMinutes}
+        onChange={handleBreakMinutesChange}
+      />
       <h2>{displayTime}</h2>
       <button onClick={startTimer}>Start</button>
       <button onClick={stopTimer}>Stop</button>
