@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 
+// assets
+import beepingSound from '/public/sounds/Quick-beep-sound-effect.mp3';
+
 function App() {
   const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
@@ -10,6 +13,12 @@ function App() {
   const [workSessions, setWorkSessions] = useState(0);
   const [userWorkMinutes, setUserWorkMinutes] = useState(25);
   const [userBreakMinutes, setUserBreakMinutes] = useState(5);
+
+  const audio = new Audio(beepingSound);
+
+  const playSound = () => {
+    audio.play();
+  };
 
   const startTimer = () => setIsRunning(true);
   const stopTimer = () => setIsRunning(false);
@@ -29,6 +38,7 @@ function App() {
   const switchTimer = () => {
     setIsWorkTime(!isWorkTime);
     setMinutes(isWorkTime ? userBreakMinutes : userWorkMinutes);
+    playSound();
   };
 
   useEffect(() => {
@@ -74,9 +84,9 @@ function App() {
         onChange={handleBreakMinutesChange}
       />
       <h2>{displayTime}</h2>
-      <button onClick={startTimer}>Start</button>
-      <button onClick={stopTimer}>Stop</button>
-      <button onClick={resetTimer}>Reset</button>
+      <button className='start-button' onClick={startTimer}>Start</button>
+      <button className='stop-button' onClick={stopTimer}>Stop</button>
+      <button className='reset-button' onClick={resetTimer}>Reset</button>
       <h3>Work Sessions: {workSessions}</h3>
     </div>
   );
