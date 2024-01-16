@@ -32,11 +32,24 @@ function App() {
     setIsRunning(false);
   };
 
-  const handleWorkMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserWorkMinutes(Number(e.target.value));
+  const handleWorkMinutesChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newValue = parseInt(event.target.value);
+    if (newValue >= 0) {
+      setUserWorkMinutes(newValue);
+      setMinutes(newValue);
+      setTotalSeconds(newValue * 60);
+    }
   };
-  const handleBreakMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserBreakMinutes(Number(e.target.value));
+
+  const handleBreakMinutesChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newValue = parseInt(event.target.value);
+    if (newValue >= 0) {
+      setUserBreakMinutes(newValue);
+    }
   };
 
   const addMinute = () => {
