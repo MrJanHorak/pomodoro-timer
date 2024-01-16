@@ -39,10 +39,22 @@ function App() {
     setUserBreakMinutes(Number(e.target.value));
   };
 
-  const startTimer = () => {
-    setMinutes(userWorkMinutes);
-    setTotalSeconds(userWorkMinutes * 60);
-    setIsRunning(true);
+  const addMinute = () => {
+    if (!isRunning) {
+      setUserWorkMinutes((prevMinutes) => prevMinutes + 1);
+      setMinutes((prevMinutes) => prevMinutes + 1);
+      setTotalSeconds((prevSeconds) => prevSeconds + 60);
+    }
+  };
+
+  const subtractMinute = () => {
+    if (!isRunning) {
+      if (totalSeconds > 60) {
+        setUserWorkMinutes((prevMinutes) => prevMinutes - 1);
+        setMinutes((prevMinutes) => prevMinutes - 1);
+        setTotalSeconds((prevSeconds) => prevSeconds - 60);
+      }
+    }
   };
 
   const switchTimer = () => {
@@ -54,12 +66,18 @@ function App() {
   };
 
   useEffect(() => {
+    const countdownElement = document.querySelector(
+      '.countdown'
+    ) as HTMLElement;
+    if (countdownElement) {
+      countdownElement.style.animationDuration = `${userWorkMinutes * 60}s`;
+    }
     setDisplayTime(
       `${minutes.toString().padStart(2, '0')}:${seconds
         .toString()
         .padStart(2, '0')}`
     );
-  }, [minutes, seconds]);
+  }, [minutes, seconds, totalSeconds, userWorkMinutes]);
 
   useEffect(() => {
     let interval: number;
@@ -71,7 +89,7 @@ function App() {
             switchTimer();
             if (isWorkTime) setMinutes(5); // break time
             else {
-              setMinutes(25); // work time
+              setMinutes(userWorkMinutes); // work time
               setWorkSessions(workSessions + 1);
             }
           } else setMinutes(minutes - 1);
@@ -85,22 +103,37 @@ function App() {
   return (
     <div className='App'>
       <h1>Pomodoro Timer</h1>
+      <label htmlFor='work-minutes'>Work Minutes</label>
       <input
         type='number'
         value={userWorkMinutes}
         onChange={handleWorkMinutesChange}
       />
+      <label htmlFor='break-minutes'>Break Minutes</label>
       <input
         type='number'
         value={userBreakMinutes}
         onChange={handleBreakMinutesChange}
       />
+      <label htmlFor='progress'>Progress</label>
       <progress
         value={(totalSeconds - minutes * 60 - seconds) / totalSeconds}
         max='1'
       />
-      <div className={`countdown-circle ${isRunning ? 'countdown' : ''}`}></div>
-      <h2>{displayTime}</h2>
+      <div className='timer-container'>
+        <button className={'plus-minus'} onClick={subtractMinute}>
+          -
+        </button>
+        <div className='circle-container'>
+          <div
+            className={`countdown-circle ${isRunning ? 'countdown' : ''}`}
+          ></div>
+          <div className='time-display'>{displayTime}</div>
+        </div>
+        <button className={'plus-minus'} onClick={addMinute}>
+          +
+        </button>
+      </div>
       <button className='start-button' onClick={toggleTimer}>
         {isRunning ? 'Pause' : 'Start'}
       </button>

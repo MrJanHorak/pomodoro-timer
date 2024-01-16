@@ -1,9 +1,12 @@
 self.addEventListener('install', function(event) {
   event.waitUntil(
-    caches.open('pomodoro-cache-v1').then(function(cache) {
+    caches.open('my-cache').then(function(cache) {
       return cache.addAll([
         '/',
         '/index.html',
+        '/static/js/bundle.js',
+        '/static/js/0.chunk.js',
+        '/static/js/main.chunk.js',
         '/manifest.json',
         '/favicon.ico',
         // include other assets, such as scripts, styles, images, etc.
