@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import './App.css';
 
 // assets
-import beepingSound from '/public/sounds/Quick-beep-sound-effect.mp3';
+import beepingSound from './assets/sounds/Quick-beep-sound-effect.mp3';
 
 function App() {
   const [minutes, setMinutes] = useState(25);
@@ -13,6 +13,7 @@ function App() {
   const [workSessions, setWorkSessions] = useState(0);
   const [userWorkMinutes, setUserWorkMinutes] = useState(25);
   const [userBreakMinutes, setUserBreakMinutes] = useState(5);
+  const [totalSeconds, setTotalSeconds] = useState(userWorkMinutes * 60);
 
   const audio = new Audio(beepingSound);
 
@@ -20,7 +21,10 @@ function App() {
     audio.play();
   };
 
-  const startTimer = () => setIsRunning(true);
+  const toggleTimer = () => {
+    setIsRunning(!isRunning);
+  };
+
   const stopTimer = () => setIsRunning(false);
   const resetTimer = () => {
     setMinutes(userWorkMinutes);
@@ -35,9 +39,17 @@ function App() {
     setUserBreakMinutes(Number(e.target.value));
   };
 
+  const startTimer = () => {
+    setMinutes(userWorkMinutes);
+    setTotalSeconds(userWorkMinutes * 60);
+    setIsRunning(true);
+  };
+
   const switchTimer = () => {
     setIsWorkTime(!isWorkTime);
-    setMinutes(isWorkTime ? userBreakMinutes : userWorkMinutes);
+    const newMinutes = isWorkTime ? userBreakMinutes : userWorkMinutes;
+    setMinutes(newMinutes);
+    setTotalSeconds(newMinutes * 60);
     playSound();
   };
 
@@ -83,10 +95,21 @@ function App() {
         value={userBreakMinutes}
         onChange={handleBreakMinutesChange}
       />
+      <progress
+        value={(totalSeconds - minutes * 60 - seconds) / totalSeconds}
+        max='1'
+      />
+      <div className={`countdown-circle ${isRunning ? 'countdown' : ''}`}></div>
       <h2>{displayTime}</h2>
-      <button className='start-button' onClick={startTimer}>Start</button>
-      <button className='stop-button' onClick={stopTimer}>Stop</button>
-      <button className='reset-button' onClick={resetTimer}>Reset</button>
+      <button className='start-button' onClick={toggleTimer}>
+        {isRunning ? 'Pause' : 'Start'}
+      </button>
+      <button className='stop-button' onClick={stopTimer}>
+        Stop
+      </button>
+      <button className='reset-button' onClick={resetTimer}>
+        Reset
+      </button>
       <h3>Work Sessions: {workSessions}</h3>
     </div>
   );

@@ -59,3 +59,23 @@ button {
 .reset-button {
   background-color: #008CBA; 
 }
+
+.countdown-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background-color: #4CAF50; /* Green */
+}
+
+.countdown {
+  animation: countdown 60s linear infinite;
+}
+
+@keyframes countdown {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
