@@ -111,6 +111,45 @@ button {
   font-weight: bolder;
 }
 
+.timer-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+
+.button-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.button-container button {
+  position: absolute;
+  background-color: transparent;
+  width: 30px;
+  height: 30px;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+}
+
+.button-container button:hover {
+  background-color: #61dafb;
+  opacity: 0.5;
+}
+.button-0 { transform: translate(-50%, -50%) rotate(-60deg) translate(150px) rotate(60deg); }
+.button-1 { transform: translate(-50%, -50%) rotate(-30deg) translate(150px) rotate(30deg); }
+.button-2 { transform: translate(-50%, -50%) rotate(0deg) translate(150px) rotate(0deg); }
+.button-3 { transform: translate(-50%, -50%) rotate(30deg) translate(150px) rotate(-30deg); }
+.button-4 { transform: translate(-50%, -50%) rotate(60deg) translate(150px) rotate(-60deg); }
+.button-5 { transform: translate(-50%, -50%) rotate(90deg) translate(150px) rotate(-90deg); }
+.button-6 { transform: translate(-50%, -50%) rotate(120deg) translate(150px) rotate(-120deg); }
+.button-7 { transform: translate(-50%, -50%) rotate(150deg) translate(150px) rotate(-150deg); }
+.button-8 { transform: translate(-50%, -50%) rotate(180deg) translate(150px) rotate(-180deg); }
+.button-9 { transform: translate(-50%, -50%) rotate(210deg) translate(150px) rotate(-210deg); }
+.button-10 { transform: translate(-50%, -50%) rotate(240deg) translate(150px) rotate(-240deg); }
+.button-11 { transform: translate(-50%, -50%) rotate(270deg) translate(150px) rotate(-270deg); }
+/* ... repeat for all buttons ... */
 @keyframes countdown {
   0% {
     transform: scale(1);

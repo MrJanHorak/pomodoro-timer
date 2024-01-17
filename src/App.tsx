@@ -26,18 +26,6 @@ function App() {
     playSound();
   };
 
-  const { minutes, seconds, setMinutes, setSeconds } = useTimer(25, switchTimer, isRunning);
-
-  const audio = new Audio(beepingSound);
-
-  const playSound = () => {
-    audio.play();
-  };
-
-  const toggleTimer = () => {
-    setIsRunning(!isRunning);
-  };
-
   const completeWorkSession = () => {
     const today = new Date().toISOString().split('T')[0];
     const currentCount = localStorage.getItem(today);
@@ -49,6 +37,29 @@ function App() {
 
   const getWorkSessionsForDay = (date: string) => {
     return Number(localStorage.getItem(date)) || 0;
+  };
+
+  const { minutes, seconds, setMinutes, setSeconds } = useTimer(
+    25,
+    switchTimer,
+    isRunning,
+    completeWorkSession
+  );
+
+  const audio = new Audio(beepingSound);
+
+  const playSound = () => {
+    audio.play();
+  };
+
+  const toggleTimer = () => {
+    setIsRunning(!isRunning);
+  };
+
+  const setTimer = (minutes: number) => {
+    setMinutes(minutes);
+    setSeconds(0);
+    setIsRunning(false);
   };
 
   const stopTimer = () => setIsRunning(false);
@@ -130,11 +141,25 @@ function App() {
         value={(totalSeconds - minutes * 60 - seconds) / totalSeconds}
         max='1'
       />
+
       <div className='timer-container'>
         <button className={'plus-minus'} onClick={subtractMinute}>
           -
         </button>
         <div className='circle-container'>
+          <div className='button-container'>
+            {[5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60].map(
+              (minute, index) => (
+                <button
+                  key={minute}
+                  className={`button-${index}`}
+                  onClick={() => setTimer(minute)}
+                >
+                  {minute}
+                </button>
+              )
+            )}
+          </div>
           <div
             className={`countdown-circle ${isRunning ? 'countdown' : ''}`}
           ></div>

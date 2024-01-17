@@ -1,7 +1,7 @@
 // useTimer.ts
 import { useState, useEffect } from 'react';
 
-export const useTimer = (initialMinutes: number, switchTimer: () => void, isRunning: boolean) => {
+export const useTimer = (initialMinutes: number, switchTimer: () => void, isRunning: boolean, onComplete: () => void ) => {
   const [minutes, setMinutes] = useState(initialMinutes);
   const [seconds, setSeconds] = useState(0);
 
@@ -13,6 +13,7 @@ export const useTimer = (initialMinutes: number, switchTimer: () => void, isRunn
           setSeconds(seconds - 1);
         } else if (seconds === 0) {
           if (minutes === 0) {
+            onComplete();
             switchTimer();
           } else {
             setMinutes(minutes - 1);
