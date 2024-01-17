@@ -8,7 +8,7 @@ self.addEventListener('install', function(event) {
         '/static/js/0.chunk.js',
         '/static/js/main.chunk.js',
         '/manifest.json',
-        '/favicon.ico',
+        // '/favicon.ico',
         // include other assets, such as scripts, styles, images, etc.
       ]);
     })
