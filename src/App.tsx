@@ -58,6 +58,8 @@ function App() {
 
   const setTimer = (minutes: number) => {
     setMinutes(minutes);
+    setTotalSeconds(minutes * 60);
+    setUserWorkMinutes(minutes);
     setSeconds(0);
     setIsRunning(false);
   };
@@ -107,6 +109,20 @@ function App() {
     }
   };
 
+  const addMinuteToBreak = () => {
+    if (!isRunning) {
+      setUserBreakMinutes((prevMinutes) => prevMinutes + 1);
+    }
+  };
+
+  const subtractMinuteFromBreak = () => {
+    if (!isRunning) {
+      if (userBreakMinutes > 0) {
+        setUserBreakMinutes((prevMinutes) => prevMinutes - 1);
+      }
+    }
+  };
+
   useEffect(() => {
     const countdownElement = document.querySelector(
       '.countdown'
@@ -119,6 +135,7 @@ function App() {
         .toString()
         .padStart(2, '0')}`
     );
+    document.title = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} - Pomodoro Timer`
   }, [minutes, seconds, totalSeconds, userWorkMinutes]);
 
   return (
@@ -180,7 +197,7 @@ function App() {
 
       <label htmlFor='break-minutes'>Break Minutes</label>
       <div className='set-break-container'>
-        <button className={'plus-minus'} onClick={subtractMinute}>
+        <button className={'plus-minus'} onClick={subtractMinuteFromBreak}>
           -
         </button>
         <input
@@ -188,7 +205,7 @@ function App() {
           value={userBreakMinutes}
           onChange={handleBreakMinutesChange}
         />
-        <button className={'plus-minus'} onClick={addMinute}>
+        <button className={'plus-minus'} onClick={addMinuteToBreak}>
           +
         </button>
       </div>
