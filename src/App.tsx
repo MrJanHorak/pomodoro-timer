@@ -4,9 +4,12 @@ import './App.css';
 // assets
 import beepingSound from './assets/sounds/Quick-beep-sound-effect.mp3';
 
+// custom hooks
+import { useTimer } from './customHooks/useTimer.ts';
+
 function App() {
-  const [minutes, setMinutes] = useState(25);
-  const [seconds, setSeconds] = useState(0);
+  // const [minutes, setMinutes] = useState(25);
+  // const [seconds, setSeconds] = useState(0);
   const [displayTime, setDisplayTime] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [isWorkTime, setIsWorkTime] = useState(true);
@@ -14,6 +17,16 @@ function App() {
   const [userWorkMinutes, setUserWorkMinutes] = useState(25);
   const [userBreakMinutes, setUserBreakMinutes] = useState(5);
   const [totalSeconds, setTotalSeconds] = useState(userWorkMinutes * 60);
+
+  const switchTimer = () => {
+    setIsWorkTime(!isWorkTime);
+    const newMinutes = isWorkTime ? userBreakMinutes : userWorkMinutes;
+    setMinutes(newMinutes);
+    setTotalSeconds(newMinutes * 60);
+    playSound();
+  };
+
+  const { minutes, seconds, setMinutes, setSeconds } = useTimer(25, switchTimer, isRunning);
 
   const audio = new Audio(beepingSound);
 
@@ -23,6 +36,19 @@ function App() {
 
   const toggleTimer = () => {
     setIsRunning(!isRunning);
+  };
+
+  const completeWorkSession = () => {
+    const today = new Date().toISOString().split('T')[0];
+    const currentCount = localStorage.getItem(today);
+    localStorage.setItem(
+      today,
+      currentCount ? String(Number(currentCount) + 1) : '1'
+    );
+  };
+
+  const getWorkSessionsForDay = (date: string) => {
+    return Number(localStorage.getItem(date)) || 0;
   };
 
   const stopTimer = () => setIsRunning(false);
@@ -70,14 +96,6 @@ function App() {
     }
   };
 
-  const switchTimer = () => {
-    setIsWorkTime(!isWorkTime);
-    const newMinutes = isWorkTime ? userBreakMinutes : userWorkMinutes;
-    setMinutes(newMinutes);
-    setTotalSeconds(newMinutes * 60);
-    playSound();
-  };
-
   useEffect(() => {
     const countdownElement = document.querySelector(
       '.countdown'
@@ -91,27 +109,6 @@ function App() {
         .padStart(2, '0')}`
     );
   }, [minutes, seconds, totalSeconds, userWorkMinutes]);
-
-  useEffect(() => {
-    let interval: number;
-    if (isRunning) {
-      interval = window.setInterval(() => {
-        if (seconds > 0) setSeconds(seconds - 1);
-        else if (seconds === 0) {
-          if (minutes === 0) {
-            switchTimer();
-            if (isWorkTime) setMinutes(5); // break time
-            else {
-              setMinutes(userWorkMinutes); // work time
-              setWorkSessions(workSessions + 1);
-            }
-          } else setMinutes(minutes - 1);
-          setSeconds(59);
-        }
-      }, 1000);
-    }
-    return () => window.clearInterval(interval);
-  }, [isRunning, minutes, seconds]);
 
   return (
     <div className='App'>
