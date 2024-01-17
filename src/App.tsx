@@ -124,28 +124,14 @@ function App() {
   return (
     <div className='App'>
       <h1>Pomodoro Timer</h1>
-      <label htmlFor='work-minutes'>Work Minutes</label>
-      <input
-        type='number'
-        value={userWorkMinutes}
-        onChange={handleWorkMinutesChange}
-      />
-      <label htmlFor='break-minutes'>Break Minutes</label>
-      <input
-        type='number'
-        value={userBreakMinutes}
-        onChange={handleBreakMinutesChange}
-      />
+
       <label htmlFor='progress'>Progress</label>
       <progress
         value={(totalSeconds - minutes * 60 - seconds) / totalSeconds}
         max='1'
       />
-
+      <h3>Work Sessions: {workSessions}</h3>
       <div className='timer-container'>
-        <button className={'plus-minus'} onClick={subtractMinute}>
-          -
-        </button>
         <div className='circle-container'>
           <div className='button-container'>
             {[5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60].map(
@@ -165,9 +151,6 @@ function App() {
           ></div>
           <div className='time-display'>{displayTime}</div>
         </div>
-        <button className={'plus-minus'} onClick={addMinute}>
-          +
-        </button>
       </div>
       <button className='start-button' onClick={toggleTimer}>
         {isRunning ? 'Pause' : 'Start'}
@@ -178,7 +161,37 @@ function App() {
       <button className='reset-button' onClick={resetTimer}>
         Reset
       </button>
-      <h3>Work Sessions: {workSessions}</h3>
+
+      <label htmlFor='work-minutes'>Work Minutes</label>
+      <div className='set-work-minutes-container'>
+        <button className={'plus-minus'} onClick={subtractMinute}>
+          -
+        </button>
+
+        <input
+          type='number'
+          value={userWorkMinutes}
+          onChange={handleWorkMinutesChange}
+        />
+        <button className={'plus-minus'} onClick={addMinute}>
+          +
+        </button>
+      </div>
+
+      <label htmlFor='break-minutes'>Break Minutes</label>
+      <div className='set-break-container'>
+        <button className={'plus-minus'} onClick={subtractMinute}>
+          -
+        </button>
+        <input
+          type='number'
+          value={userBreakMinutes}
+          onChange={handleBreakMinutesChange}
+        />
+        <button className={'plus-minus'} onClick={addMinute}>
+          +
+        </button>
+      </div>
     </div>
   );
 }
