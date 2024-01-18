@@ -145,7 +145,21 @@ button {
 .button-9 { transform: translate(-50%, -50%) rotate(210deg) translate(150px) rotate(-210deg); }
 .button-10 { transform: translate(-50%, -50%) rotate(240deg) translate(150px) rotate(-240deg); }
 .button-11 { transform: translate(-50%, -50%) rotate(270deg) translate(150px) rotate(-270deg); }
-/* ... repeat for all buttons ... */
+
+.set-work-minutes-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.set-break-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
 @keyframes countdown {
   0% {
     transform: scale(1);
