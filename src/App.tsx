@@ -10,15 +10,15 @@ import { useTimer } from './customHooks/useTimer.ts';
 // Function to create a dynamic SVG
 const createProgressSVG = (progress: number) => {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-    <circle cx="16" cy="16" r="14" stroke="#000" stroke-width="2" fill="none" />
-    <circle cx="16" cy="16" r="14" stroke="#f00" stroke-width="2" fill="none" stroke-dasharray="${progress * 100}, 100" transform="rotate(-90 16 16)" />
+    <circle cx="16" cy="16" r="14" stroke="#999" stroke-width="6" fill="none" />
+    <circle cx="16" cy="16" r="14" stroke="#f00" stroke-width="6" fill="none" stroke-dasharray="${progress * 100}, 100" transform="rotate(-90 16 16)" />
   </svg>`;
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 };
 
 // Function to set the favicon
 const setFavicon = (url: string) => {
-  const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+  const link = document.querySelector("link[rel*='icon']") as HTMLLinkElement || document.createElement('link');
   link.type = 'image/x-icon';
   link.rel = 'shortcut icon';
   link.href = url;
@@ -36,6 +36,7 @@ function App() {
   const [userWorkMinutes, setUserWorkMinutes] = useState(25);
   const [userBreakMinutes, setUserBreakMinutes] = useState(5);
   const [totalSeconds, setTotalSeconds] = useState(userWorkMinutes * 60);
+  const [backgroundStyle, setBackgroundStyle] = useState({});
 
   const switchTimer = () => {
     setIsWorkTime(!isWorkTime);
@@ -159,18 +160,21 @@ function App() {
     const progress = (totalSeconds - minutes * 60 - seconds) / totalSeconds
     const svg = createProgressSVG(progress);
     setFavicon(svg);
+    setBackgroundStyle({
+      background: `linear-gradient(to top, #eee ${progress * 100}%, #111 ${progress * 100}%)`
+    });
   }, [minutes, seconds, totalSeconds, userWorkMinutes]);
 
   return (
-    <div className='App'>
+    <div className='App' style={backgroundStyle}>
       <h1>Pomodoro Timer</h1>
 
-      <label htmlFor='progress'>Progress</label>
+      {/* <label htmlFor='progress'>Progress</label>
       <progress
         value={(totalSeconds - minutes * 60 - seconds) / totalSeconds}
         max='1'
-      />
-      <h3>Work Sessions: {workSessions}</h3>
+      /> */}
+     
       <div className='timer-container'>
         <div className='circle-container'>
           <div className='button-container'>
@@ -201,7 +205,7 @@ function App() {
       <button className='reset-button' onClick={resetTimer}>
         Reset
       </button>
-
+      <h3>Work Sessions: {workSessions}</h3>
       <label htmlFor='work-minutes'>Work Minutes</label>
       <div className='set-work-minutes-container'>
         <button className={'plus-minus'} onClick={subtractMinute}>
