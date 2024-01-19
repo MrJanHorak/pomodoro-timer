@@ -7,6 +7,25 @@ import beepingSound from './assets/sounds/Quick-beep-sound-effect.mp3';
 // custom hooks
 import { useTimer } from './customHooks/useTimer.ts';
 
+// Function to create a dynamic SVG
+const createProgressSVG = (progress: number) => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+    <circle cx="16" cy="16" r="14" stroke="#000" stroke-width="2" fill="none" />
+    <circle cx="16" cy="16" r="14" stroke="#f00" stroke-width="2" fill="none" stroke-dasharray="${progress * 100}, 100" transform="rotate(-90 16 16)" />
+  </svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+};
+
+// Function to set the favicon
+const setFavicon = (url: string) => {
+  const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+  link.type = 'image/x-icon';
+  link.rel = 'shortcut icon';
+  link.href = url;
+  document.getElementsByTagName('head')[0].appendChild(link);
+};
+
+
 function App() {
   // const [minutes, setMinutes] = useState(25);
   // const [seconds, setSeconds] = useState(0);
@@ -136,6 +155,10 @@ function App() {
         .padStart(2, '0')}`
     );
     document.title = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} - Pomodoro Timer`
+
+    const progress = minutes / totalSeconds;
+    const svg = createProgressSVG(progress);
+    setFavicon(svg);
   }, [minutes, seconds, totalSeconds, userWorkMinutes]);
 
   return (
