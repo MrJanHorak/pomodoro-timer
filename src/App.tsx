@@ -157,7 +157,6 @@ function App() {
     document.title = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} - Pomodoro Timer`
 
     const progress = (totalSeconds - minutes * 60 - seconds) / totalSeconds
-    console.log(progress);
     const svg = createProgressSVG(progress);
     setFavicon(svg);
   }, [minutes, seconds, totalSeconds, userWorkMinutes]);
