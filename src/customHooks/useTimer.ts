@@ -1,9 +1,9 @@
-// useTimer.ts
 import { useState, useEffect } from 'react';
 
-export const useTimer = (initialMinutes: number, switchTimer: () => void, isRunning: boolean, onComplete: () => void ) => {
-  const [minutes, setMinutes] = useState(initialMinutes);
+export const useTimer = (userWorkMinutes: number, userBreakMinutes: number, isRunning: boolean, onComplete: () => void ) => {
+  const [minutes, setMinutes] = useState(userWorkMinutes);
   const [seconds, setSeconds] = useState(0);
+  const [phase, setPhase] = useState('work'); // Add this line
 
   useEffect(() => {
     let interval: number;
@@ -14,7 +14,9 @@ export const useTimer = (initialMinutes: number, switchTimer: () => void, isRunn
         } else if (seconds === 0) {
           if (minutes === 0) {
             onComplete();
-            switchTimer();
+            // switchTimer();
+            setPhase(prevPhase => prevPhase === 'work' ? 'break' : 'work'); // Add this line
+            setMinutes(phase === 'work' ? userBreakMinutes : userWorkMinutes); // Add this lineAdd this line
           } else {
             setMinutes(minutes - 1);
             setSeconds(59);
@@ -25,5 +27,5 @@ export const useTimer = (initialMinutes: number, switchTimer: () => void, isRunn
     return () => window.clearInterval(interval);
   }, [minutes, seconds, isRunning]);
 
-  return { minutes, seconds, setMinutes, setSeconds };
+  return { minutes, seconds, setMinutes, setSeconds, phase }; // Add 'phase' here
 };
