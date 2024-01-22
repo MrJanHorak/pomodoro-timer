@@ -1,31 +1,65 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-export const useTimer = (userWorkMinutes: number, userBreakMinutes: number, isRunning: boolean, onComplete: () => void ) => {
+export const useTimer = (
+  userWorkMinutes: number,
+  userBreakMinutes: number,
+  isRunning: boolean,
+  onComplete: () => void,
+  switchTimer: () => void
+) => {
   const [minutes, setMinutes] = useState(userWorkMinutes);
   const [seconds, setSeconds] = useState(0);
-  const [phase, setPhase] = useState('work'); // Add this line
+  const [phase, setPhase] = useState('work');
+  const phaseRef = useRef(phase);
+  phaseRef.current = phase;
+  const minutesRef = useRef(minutes);
+  minutesRef.current = minutes;
+
+  const secondsRef = useRef(seconds);
+  secondsRef.current = seconds;
+
+  useEffect(() => {
+    setMinutes(phase === 'work' ? userWorkMinutes : userBreakMinutes);
+  }, [userWorkMinutes, userBreakMinutes, phase]);
 
   useEffect(() => {
     let interval: number;
+    console.log('isRunning', isRunning);
+    console.log('minutes', minutes);
     if (isRunning && (minutes > 0 || seconds > 0)) {
       interval = window.setInterval(() => {
-        if (seconds > 0) {
-          setSeconds(seconds - 1);
-        } else if (seconds === 0) {
-          if (minutes === 0) {
-            onComplete();
-            // switchTimer();
-            setPhase(prevPhase => prevPhase === 'work' ? 'break' : 'work'); // Add this line
-            setMinutes(phase === 'work' ? userBreakMinutes : userWorkMinutes); // Add this lineAdd this line
+        if (secondsRef.current > 1) {
+          setSeconds(secondsRef.current - 1);
+        } else if (secondsRef.current === 0) {
+          if (minutesRef.current === 0) {
+            console.log('phaseRef.current', phaseRef.current);
+
+            setPhase((prevPhase) => {
+              const newPhase = phaseRef.current === 'work' ? 'break' : 'work';
+              setMinutes(
+                newPhase === 'work' ? userWorkMinutes : userBreakMinutes
+              );
+              return newPhase;
+            });
           } else {
-            setMinutes(minutes - 1);
+            setMinutes(minutesRef.current - 1);
             setSeconds(59);
           }
         }
       }, 1000);
     }
     return () => window.clearInterval(interval);
-  }, [minutes, seconds, isRunning]);
+  }, [minutes, seconds, isRunning, phase]);
 
-  return { minutes, seconds, setMinutes, setSeconds, phase }; // Add 'phase' here
+  useEffect(() => {
+    if (phase === 'work') {
+      setMinutes(userWorkMinutes);
+    } else {
+      setMinutes(userBreakMinutes);
+    }
+    onComplete();
+    switchTimer();
+  }, [phase]);
+
+  return { minutes, setMinutes, seconds, setSeconds, phase };
 };

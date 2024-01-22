@@ -40,13 +40,18 @@ function App() {
   const [textColor, setTextColor] = useState('#000');
 
   const switchTimer = () => {
-    setIsWorkTime(!isWorkTime);
-    const newMinutes = isWorkTime ? userBreakMinutes : userWorkMinutes;
-    setMinutes(newMinutes);
-    setTotalSeconds(newMinutes * 60);
+    console.log('switchTimer');
+    setIsWorkTime((prevIsWorkTime) => {
+      const newIsWorkTime = !prevIsWorkTime;
+      const newMinutes = newIsWorkTime ? userWorkMinutes : userBreakMinutes;
+      setMinutes(newMinutes);
+      setTotalSeconds(newMinutes * 60);
+      return newIsWorkTime;
+    });
     playSound();
+    setWorkSessions((prevSessions) => prevSessions + 1);
   };
-
+  
   const completeWorkSession = () => {
     const today = new Date().toISOString().split('T')[0];
     const currentCount = localStorage.getItem(today);
@@ -63,7 +68,8 @@ function App() {
   const { minutes, seconds, setMinutes, setSeconds, phase } = useTimer(
     userWorkMinutes, userBreakMinutes,
     isRunning,
-    completeWorkSession
+    completeWorkSession,
+    switchTimer
   );
 
   const audio = new Audio(beepingSound);
@@ -146,8 +152,6 @@ function App() {
   useEffect(() => {
     const circleColor = phase === 'work' ? 'green' : 'yellow';
     const faviconColor = phase === 'work' ? 'red' : 'yellow';
-    // const progress = (totalSeconds - minutes * 60 - seconds) / totalSeconds;
-    // const progress = (totalSeconds - minutes * 60 - seconds) / totalSeconds;
     const progress =
       (userWorkMinutes * 60 - (minutes * 60 + seconds)) /
       (userWorkMinutes * 60);
@@ -183,7 +187,7 @@ function App() {
     `;
 
     app.style.setProperty('--timer-duration', `${userWorkMinutes * 60}s`);
-    app.style.setProperty('--color-start', '#000000');
+    app.style.setProperty('--color-start', '#5ADAAE');
     app.style.setProperty('--color-end', '#4ADEDE');
     app.style.setProperty('--progress', `${progress * 100}%`);
 
@@ -192,11 +196,11 @@ function App() {
     return () => {
       document.head.removeChild(styleElement);
     };
-  }, [minutes, seconds, totalSeconds, userWorkMinutes]);
+  }, [minutes, seconds, totalSeconds, userWorkMinutes, phase]);
 
   return (
+
     <div className='App' style={{ animation: 'wave 3s ease infinite' }}>
-      <h1>Pomodoro Timer</h1>
 
       <div className='timer-container'>
         <div className='circle-container'>
@@ -219,16 +223,25 @@ function App() {
           <div className='time-display'>{displayTime}</div>
         </div>
       </div>
+
+      <div className='phase-display'>{phase}</div>
+      
+      <h3>Pomodoro Timer</h3>
+      
       <button className='start-button' onClick={toggleTimer}>
         {isRunning ? 'Pause' : 'Start'}
       </button>
+      
       <button className='stop-button' onClick={stopTimer}>
         Stop
       </button>
+      
       <button className='reset-button' onClick={resetTimer}>
         Reset
       </button>
+      
       <h3>Work Sessions: {workSessions}</h3>
+      
       <label htmlFor='work-minutes'>Work Minutes</label>
       <div className='set-work-minutes-container'>
         <button className={'plus-minus'} onClick={subtractMinute}>
@@ -240,6 +253,7 @@ function App() {
           value={userWorkMinutes}
           onChange={handleWorkMinutesChange}
         />
+      
         <button className={'plus-minus'} onClick={addMinute}>
           +
         </button>
@@ -259,6 +273,7 @@ function App() {
           +
         </button>
       </div>
+    
     </div>
   );
 }
