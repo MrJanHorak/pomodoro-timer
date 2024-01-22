@@ -15,6 +15,7 @@ const createProgressSVG = (progress: number, color: string) => {
 </svg>`;
 return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 };
+
 // Function to set the favicon
 const setFavicon = (url: string) => {
   const link =
@@ -26,25 +27,8 @@ const setFavicon = (url: string) => {
   document.getElementsByTagName('head')[0].appendChild(link);
 };
 
-// function createWaveKeyframes(progress) {
-//   return `
-//     @keyframes wave {
-//       0% {
-//         background-position: 0% ${progress * 100}%;
-//       }
-//       50% {
-//         background-position: 100% ${progress * 100}%;
-//       }
-//       100% {
-//         background-position: 0% ${progress * 100}%;
-//       }
-//     }
-//   `;
-// }
 
 function App() {
-  // const [minutes, setMinutes] = useState(25);
-  // const [seconds, setSeconds] = useState(0);
   const [displayTime, setDisplayTime] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [isWorkTime, setIsWorkTime] = useState(true);
@@ -203,15 +187,7 @@ function App() {
     app.style.setProperty('--color-end', '#4ADEDE');
     app.style.setProperty('--progress', `${progress * 100}%`);
 
-    // Append the style element to the document head
     document.head.appendChild(styleElement);
-
-    // const app = document.querySelector('.App') as HTMLElement;
-    // if (app) {
-    //   app.style.setProperty('--color-start', '#4ab9de');
-    //   app.style.setProperty('--color-end', '#4ADEDE');
-    //   app.style.setProperty('--progress', `${progress * 100}%`);
-    // }
 
     return () => {
       document.head.removeChild(styleElement);
@@ -221,12 +197,6 @@ function App() {
   return (
     <div className='App' style={{ animation: 'wave 3s ease infinite' }}>
       <h1>Pomodoro Timer</h1>
-
-      {/* <label htmlFor='progress'>Progress</label>
-      <progress
-        value={(totalSeconds - minutes * 60 - seconds) / totalSeconds}
-        max='1'
-      /> */}
 
       <div className='timer-container'>
         <div className='circle-container'>
