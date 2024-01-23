@@ -12,6 +12,10 @@ The timer updates the browser tab title dynamically to show the remaining time. 
 
 The timer also updates the favicon dynamically to reflect the progress of the timer. This is done by creating an SVG of a circle that represents the progress and setting it as the favicon. The SVG is created and updated using the [`createProgressSVG`](src/App.tsx) function in [`App.tsx`](src/App.tsx).
 
+### Dynamic Background
+
+The background also updates dynamically to reflect the progress of the timer. This is done by animating a two tone linear gradient.
+
 ### Custom Timer Hook
 
 The timer logic is encapsulated in a custom hook called [`useTimer`](src/customHooks/useTimer.ts). This hook manages the timer state and provides functions to start, pause, and reset the timer.
