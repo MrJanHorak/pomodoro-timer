@@ -51,6 +51,7 @@ function App() {
     playSound();
     setWorkSessions((prevSessions) => prevSessions + 1);
   };
+
   
   const completeWorkSession = () => {
     const today = new Date().toISOString().split('T')[0];
@@ -200,7 +201,7 @@ function App() {
 
   return (
 
-    <div className='App' style={{ animation: 'wave 3s ease infinite' }}>
+    <div className='App'>
 
       <div className='timer-container'>
         <div className='circle-container'>
