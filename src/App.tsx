@@ -38,6 +38,7 @@ function App() {
   const [totalSeconds, setTotalSeconds] = useState(userWorkMinutes * 60);
   const [backgroundStyle, setBackgroundStyle] = useState({});
   const [textColor, setTextColor] = useState('#000');
+  const [sessionCounter, setSessionCounter] = useState(0);
 
   const switchTimer = () => {
     console.log('switchTimer');
@@ -48,8 +49,14 @@ function App() {
       setTotalSeconds(newMinutes * 60);
       return newIsWorkTime;
     });
+    setSessionCounter(prevCounter => prevCounter + 1);
+    console.log(sessionCounter);
     playSound();
-    setWorkSessions((prevSessions) => prevSessions + 1);
+    if (sessionCounter === 2) {
+      console.log('hello');
+      setWorkSessions((prevSessions) => prevSessions + 1);
+      setSessionCounter(0);
+    }
   };
 
   
