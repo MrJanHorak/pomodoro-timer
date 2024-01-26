@@ -11,9 +11,11 @@ import { useTimer } from './customHooks/useTimer.ts';
 const createProgressSVG = (progress: number, color: string) => {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <circle cx="16" cy="16" r="14" stroke="#999" stroke-width="6" fill="none" />
-  <circle cx="16" cy="16" r="14" stroke="${color}" stroke-width="6" fill="none" stroke-dasharray="${progress * 100}, 100" transform="rotate(-90 16 16)" />
+  <circle cx="16" cy="16" r="14" stroke="${color}" stroke-width="6" fill="none" stroke-dasharray="${
+    progress * 100
+  }, 100" transform="rotate(-90 16 16)" />
 </svg>`;
-return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 };
 
 // Function to set the favicon
@@ -26,7 +28,6 @@ const setFavicon = (url: string) => {
   link.href = url;
   document.getElementsByTagName('head')[0].appendChild(link);
 };
-
 
 function App() {
   const [displayTime, setDisplayTime] = useState('');
@@ -41,7 +42,6 @@ function App() {
   const [sessionCounter, setSessionCounter] = useState(0);
 
   const switchTimer = () => {
-    console.log('switchTimer');
     setIsWorkTime((prevIsWorkTime) => {
       const newIsWorkTime = !prevIsWorkTime;
       const newMinutes = newIsWorkTime ? userWorkMinutes : userBreakMinutes;
@@ -49,17 +49,14 @@ function App() {
       setTotalSeconds(newMinutes * 60);
       return newIsWorkTime;
     });
-    setSessionCounter(prevCounter => prevCounter + 1);
-    console.log(sessionCounter);
+    setSessionCounter((prevCounter) => prevCounter + 1);
     playSound();
     if (sessionCounter === 2) {
-      console.log('hello');
       setWorkSessions((prevSessions) => prevSessions + 1);
       setSessionCounter(0);
     }
   };
 
-  
   const completeWorkSession = () => {
     const today = new Date().toISOString().split('T')[0];
     const currentCount = localStorage.getItem(today);
@@ -74,7 +71,8 @@ function App() {
   };
 
   const { minutes, seconds, setMinutes, setSeconds, phase } = useTimer(
-    userWorkMinutes, userBreakMinutes,
+    userWorkMinutes,
+    userBreakMinutes,
     isRunning,
     completeWorkSession,
     switchTimer
@@ -207,9 +205,7 @@ function App() {
   }, [minutes, seconds, totalSeconds, userWorkMinutes, phase]);
 
   return (
-
     <div className='App'>
-
       <div className='timer-container'>
         <div className='circle-container'>
           <div className='button-container' style={{ color: textColor }}>
@@ -233,23 +229,23 @@ function App() {
       </div>
 
       <div className='phase-display'>{phase}</div>
-      
+
       <h3>Pomodoro Timer</h3>
-      
+
       <button className='start-button' onClick={toggleTimer}>
         {isRunning ? 'Pause' : 'Start'}
       </button>
-      
+
       <button className='stop-button' onClick={stopTimer}>
         Stop
       </button>
-      
+
       <button className='reset-button' onClick={resetTimer}>
         Reset
       </button>
-      
+
       <h3>Work Sessions: {workSessions}</h3>
-      
+
       <label htmlFor='work-minutes'>Work Minutes</label>
       <div className='set-work-minutes-container'>
         <button className={'plus-minus'} onClick={subtractMinute}>
@@ -261,7 +257,7 @@ function App() {
           value={userWorkMinutes}
           onChange={handleWorkMinutesChange}
         />
-      
+
         <button className={'plus-minus'} onClick={addMinute}>
           +
         </button>
@@ -281,7 +277,6 @@ function App() {
           +
         </button>
       </div>
-    
     </div>
   );
 }
