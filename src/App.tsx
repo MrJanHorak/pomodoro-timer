@@ -37,10 +37,10 @@ function App() {
   const [userWorkMinutes, setUserWorkMinutes] = useState(25);
   const [userBreakMinutes, setUserBreakMinutes] = useState(5);
   const [totalSeconds, setTotalSeconds] = useState(userWorkMinutes * 60);
-  const [backgroundStyle, setBackgroundStyle] = useState({});
+  // const [backgroundStyle, setBackgroundStyle] = useState({});
   const [textColor, setTextColor] = useState('#000');
   const [sessionCounter, setSessionCounter] = useState(0);
-
+  // let circleColor = 'green';
   const switchTimer = () => {
     setIsWorkTime((prevIsWorkTime) => {
       const newIsWorkTime = !prevIsWorkTime;
@@ -79,7 +79,7 @@ function App() {
   );
 
   const audio = new Audio(beepingSound);
-
+  const circleColor = phase === 'work' ? 'green' : 'yellow';
   const playSound = () => {
     audio.play();
   };
@@ -156,17 +156,16 @@ function App() {
   };
 
   useEffect(() => {
-    const circleColor = phase === 'work' ? 'green' : 'yellow';
     const faviconColor = phase === 'work' ? 'red' : 'yellow';
     const progress =
       (userWorkMinutes * 60 - (minutes * 60 + seconds)) /
       (userWorkMinutes * 60);
-    const countdownElement = document.querySelector(
-      '.countdown'
-    ) as HTMLElement;
-    if (countdownElement) {
-      countdownElement.style.animationDuration = `${userWorkMinutes * 60}s`;
-    }
+    // const countdownElement = document.querySelector(
+    //   '.countdown'
+    // ) as HTMLElement;
+    // if (countdownElement) {
+    //   countdownElement.style.animationDuration = `${userWorkMinutes * 60}s`;
+    // }
     setDisplayTime(
       `${minutes.toString().padStart(2, '0')}:${seconds
         .toString()
@@ -191,7 +190,7 @@ function App() {
         opacity: 1;
       }
     `;
-
+    
     app.style.setProperty('--timer-duration', `${userWorkMinutes * 60}s`);
     app.style.setProperty('--color-start', '#5ADAAE');
     app.style.setProperty('--color-end', '#4ADEDE');
@@ -222,7 +221,11 @@ function App() {
             )}
           </div>
           <div
-            className={`countdown-circle ${isRunning ? 'countdown' : ''}`}
+            style={{
+              backgroundColor: circleColor,
+              animation: isRunning ? `countdown ${totalSeconds}s linear infinite` : 'none',
+            }}
+            className={`countdown-circle countdown`}
           ></div>
           <div className='time-display'>{displayTime}</div>
         </div>
