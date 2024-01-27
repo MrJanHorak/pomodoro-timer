@@ -41,6 +41,7 @@ function App() {
   const [sessionCounter, setSessionCounter] = useState(0);
   const switchTimer = () => {
     setIsWorkTime((prevIsWorkTime) => {
+      switchGreadients();
       const newIsWorkTime = !prevIsWorkTime;
       const newMinutes = newIsWorkTime ? userWorkMinutes : userBreakMinutes;
       setMinutes(newMinutes);
@@ -103,6 +104,18 @@ function App() {
     setSeconds(0);
     setIsRunning(false);
   };
+
+  const switchGreadients = () => {
+    let startColor = '#4ADEDE';
+    let endColor = '#5ADAAE';
+    if (phase === 'work') {
+      startColor = '#5ADAAE';
+      endColor = '#4ADEDE';
+    }
+    const app = document.querySelector('.App') as HTMLElement;
+    app.style.setProperty('--color-start', startColor);
+    app.style.setProperty('--color-end', endColor);
+  }
 
   const handleWorkMinutesChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -193,8 +206,8 @@ function App() {
     `;
 
     app.style.setProperty('--timer-duration', `${userWorkMinutes * 60}s`);
-    app.style.setProperty('--color-start', '#5ADAAE');
-    app.style.setProperty('--color-end', '#4ADEDE');
+    // app.style.setProperty('--color-start', '#5ADAAE');
+    // app.style.setProperty('--color-end', '#4ADEDE');
     app.style.setProperty('--progress', `${progress * 100}%`);
 
     document.head.appendChild(styleElement);
@@ -225,7 +238,7 @@ function App() {
             style={{
               backgroundColor: circleColor,
               animation: isRunning
-                ? `countdown ${totalSeconds+.5}s linear infinite`
+                ? `countdown ${totalSeconds}s linear infinite`
                 : 'none',
             }}
             className={`countdown-circle countdown`}
@@ -236,7 +249,7 @@ function App() {
 
       <div className='phase-display'>{phase}</div>
 
-      <h3>Pomodoro Timer</h3>
+      {/* <h3>Pomodoro Timer</h3> */}
 
       <button className='start-button' onClick={toggleTimer}>
         {isRunning ? 'Pause' : 'Start'}
