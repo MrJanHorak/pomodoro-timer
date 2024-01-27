@@ -37,10 +37,8 @@ function App() {
   const [userWorkMinutes, setUserWorkMinutes] = useState(25);
   const [userBreakMinutes, setUserBreakMinutes] = useState(5);
   const [totalSeconds, setTotalSeconds] = useState(userWorkMinutes * 60);
-  // const [backgroundStyle, setBackgroundStyle] = useState({});
   const [textColor, setTextColor] = useState('#000');
   const [sessionCounter, setSessionCounter] = useState(0);
-  // let circleColor = 'green';
   const switchTimer = () => {
     setIsWorkTime((prevIsWorkTime) => {
       const newIsWorkTime = !prevIsWorkTime;
@@ -70,13 +68,14 @@ function App() {
     return Number(localStorage.getItem(date)) || 0;
   };
 
-  const { minutes, seconds, setMinutes, setSeconds, phase } = useTimer(
-    userWorkMinutes,
-    userBreakMinutes,
-    isRunning,
-    completeWorkSession,
-    switchTimer
-  );
+  const { minutes, seconds, setMinutes, setSeconds, phase, setPhase } =
+    useTimer(
+      userWorkMinutes,
+      userBreakMinutes,
+      isRunning,
+      completeWorkSession,
+      switchTimer
+    );
 
   const audio = new Audio(beepingSound);
   const circleColor = phase === 'work' ? 'green' : 'yellow';
@@ -99,6 +98,8 @@ function App() {
   const stopTimer = () => setIsRunning(false);
   const resetTimer = () => {
     setMinutes(userWorkMinutes);
+    setUserBreakMinutes(userBreakMinutes);
+    setPhase('work');
     setSeconds(0);
     setIsRunning(false);
   };
@@ -133,7 +134,7 @@ function App() {
 
   const subtractMinute = () => {
     if (!isRunning) {
-      if (totalSeconds > 60) {
+      if (minutes > 0) {
         setUserWorkMinutes((prevMinutes) => prevMinutes - 1);
         setMinutes((prevMinutes) => prevMinutes - 1);
         setTotalSeconds((prevSeconds) => prevSeconds - 60);
@@ -190,7 +191,7 @@ function App() {
         opacity: 1;
       }
     `;
-    
+
     app.style.setProperty('--timer-duration', `${userWorkMinutes * 60}s`);
     app.style.setProperty('--color-start', '#5ADAAE');
     app.style.setProperty('--color-end', '#4ADEDE');
@@ -223,7 +224,9 @@ function App() {
           <div
             style={{
               backgroundColor: circleColor,
-              animation: isRunning ? `countdown ${totalSeconds}s linear infinite` : 'none',
+              animation: isRunning
+                ? `countdown ${totalSeconds+.5}s linear infinite`
+                : 'none',
             }}
             className={`countdown-circle countdown`}
           ></div>

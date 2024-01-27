@@ -61,5 +61,5 @@ export const useTimer = (
     switchTimer();
   }, [phase]);
 
-  return { minutes, setMinutes, seconds, setSeconds, phase };
+  return { minutes, setMinutes, seconds, setSeconds, phase, setPhase };
 };
