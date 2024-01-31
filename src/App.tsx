@@ -39,6 +39,7 @@ function App() {
   const [totalSeconds, setTotalSeconds] = useState(userWorkMinutes * 60);
   const [textColor, setTextColor] = useState('#000');
   const [sessionCounter, setSessionCounter] = useState(0);
+
   const switchTimer = () => {
     setIsWorkTime((prevIsWorkTime) => {
       switchGreadients();
@@ -80,6 +81,7 @@ function App() {
 
   const audio = new Audio(beepingSound);
   const circleColor = phase === 'work' ? 'green' : 'yellow';
+
   const playSound = () => {
     audio.play();
   };
@@ -97,6 +99,7 @@ function App() {
   };
 
   const stopTimer = () => setIsRunning(false);
+
   const resetTimer = () => {
     setMinutes(userWorkMinutes);
     setUserBreakMinutes(userBreakMinutes);
@@ -115,7 +118,7 @@ function App() {
     const app = document.querySelector('.App') as HTMLElement;
     app.style.setProperty('--color-start', startColor);
     app.style.setProperty('--color-end', endColor);
-  }
+  };
 
   const handleWorkMinutesChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -170,10 +173,18 @@ function App() {
   };
 
   useEffect(() => {
+    let progress: number;
     const faviconColor = phase === 'work' ? 'red' : 'yellow';
-    const progress =
-      (userWorkMinutes * 60 - (minutes * 60 + seconds)) /
-      (userWorkMinutes * 60);
+    if (phase === 'work') {
+      progress =
+        (userWorkMinutes * 60 - (minutes * 60 + seconds)) /
+        (userWorkMinutes * 60);
+    } else {
+      progress =
+        (userBreakMinutes * 60 - (minutes * 60 + seconds)) /
+        (userBreakMinutes * 60);
+    }
+
     // const countdownElement = document.querySelector(
     //   '.countdown'
     // ) as HTMLElement;
@@ -206,8 +217,6 @@ function App() {
     `;
 
     app.style.setProperty('--timer-duration', `${userWorkMinutes * 60}s`);
-    // app.style.setProperty('--color-start', '#5ADAAE');
-    // app.style.setProperty('--color-end', '#4ADEDE');
     app.style.setProperty('--progress', `${progress * 100}%`);
 
     document.head.appendChild(styleElement);
