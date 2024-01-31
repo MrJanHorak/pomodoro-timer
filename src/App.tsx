@@ -39,6 +39,12 @@ function App() {
   const [totalSeconds, setTotalSeconds] = useState(userWorkMinutes * 60);
   const [textColor, setTextColor] = useState('#000');
   const [sessionCounter, setSessionCounter] = useState(0);
+  const defaultIframeHtml = `<iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" allowtransparency="true" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1035841942&color=%23545e81&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true&borders=false&d_color=000000&b_color=000000&h_color=000000&p_color=000000&f_color=000000&sb_color=000000&sa=true&sb=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/lofi_girl" title="Lofi Girl" target="_blank" style="color: #cccccc; text-decoration: none;">Lofi Girl</a> · <a href="https://soundcloud.com/lofi_girl/4-am-studysession" title="4 A.M Study Session 📚 - [lofi hip hop/chill beats]" target="_blank" style="color: #cccccc; text-decoration: none;">4 A.M Study Session 📚 - [lofi hip hop/chill beats]</a></div>`;
+  const [iframeHtml, setIframeHtml] = useState(defaultIframeHtml);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIframeHtml(event.target.value);
+  };
 
   const switchTimer = () => {
     setIsWorkTime((prevIsWorkTime) => {
@@ -273,7 +279,17 @@ function App() {
       </button>
 
       <h3>Work Sessions: {workSessions}</h3>
-
+      <div>
+        <input
+          type='text'
+          onChange={handleInputChange}
+          placeholder='Enter new iframe HTML'
+        />
+        <div
+          style={{ position: 'absolute', zIndex: -1 }}
+          dangerouslySetInnerHTML={{ __html: iframeHtml }}
+        />
+      </div>
       <label htmlFor='work-minutes'>Work Minutes</label>
       <div className='set-work-minutes-container'>
         <button className={'plus-minus'} onClick={subtractMinute}>
