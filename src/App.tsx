@@ -30,6 +30,7 @@ const setFavicon = (url: string) => {
 };
 
 function App() {
+  const [showSettings, setShowSettings] = useState(false);
   const [displayTime, setDisplayTime] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [isWorkTime, setIsWorkTime] = useState(true);
@@ -279,48 +280,55 @@ function App() {
       </button>
 
       <h3>Work Sessions: {workSessions}</h3>
-      <div>
-        <input
-          type='text'
-          onChange={handleInputChange}
-          placeholder='Enter new iframe HTML'
-        />
-        <div
-          style={{ position: 'absolute', zIndex: -1 }}
-          dangerouslySetInnerHTML={{ __html: iframeHtml }}
-        />
-      </div>
-      <label htmlFor='work-minutes'>Work Minutes</label>
-      <div className='set-work-minutes-container'>
-        <button className={'plus-minus'} onClick={subtractMinute}>
-          -
-        </button>
+      <div
+        style={{ position: 'absolute', zIndex: -1 }}
+        dangerouslySetInnerHTML={{ __html: iframeHtml }}
+      />
+      <button onClick={() => setShowSettings(!showSettings)}>
+        {showSettings ? 'Hide Settings' : 'Show Settings'}
+      </button>
+      {showSettings && (
+        <>
+          <div>
+            <input
+              type='text'
+              onChange={handleInputChange}
+              placeholder='Enter new iframe HTML'
+            />
+          </div>
+          <label htmlFor='work-minutes'>Work Minutes</label>
+          <div className='set-work-minutes-container'>
+            <button className={'plus-minus'} onClick={subtractMinute}>
+              -
+            </button>
 
-        <input
-          type='number'
-          value={userWorkMinutes}
-          onChange={handleWorkMinutesChange}
-        />
+            <input
+              type='number'
+              value={userWorkMinutes}
+              onChange={handleWorkMinutesChange}
+            />
 
-        <button className={'plus-minus'} onClick={addMinute}>
-          +
-        </button>
-      </div>
+            <button className={'plus-minus'} onClick={addMinute}>
+              +
+            </button>
+          </div>
 
-      <label htmlFor='break-minutes'>Break Minutes</label>
-      <div className='set-break-container'>
-        <button className={'plus-minus'} onClick={subtractMinuteFromBreak}>
-          -
-        </button>
-        <input
-          type='number'
-          value={userBreakMinutes}
-          onChange={handleBreakMinutesChange}
-        />
-        <button className={'plus-minus'} onClick={addMinuteToBreak}>
-          +
-        </button>
-      </div>
+          <label htmlFor='break-minutes'>Break Minutes</label>
+          <div className='set-break-container'>
+            <button className={'plus-minus'} onClick={subtractMinuteFromBreak}>
+              -
+            </button>
+            <input
+              type='number'
+              value={userBreakMinutes}
+              onChange={handleBreakMinutesChange}
+            />
+            <button className={'plus-minus'} onClick={addMinuteToBreak}>
+              +
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
