@@ -20,6 +20,10 @@ The background also updates dynamically to reflect the progress of the timer. Th
 
 The timer logic is encapsulated in a custom hook called [`useTimer`](src/customHooks/useTimer.ts). This hook manages the timer state and provides functions to start, pause, and reset the timer.
 
+### Add Music from Sound cloud
+
+Add an iframe for a soundcloud player in the setting for music playback. The iframe is hidden from view and will autoplay.
+
 ## Project Structure
 
 - `src/App.tsx`: The main component of the app. It uses the `useTimer` hook and updates the document title and favicon.
