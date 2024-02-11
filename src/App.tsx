@@ -40,6 +40,8 @@ function App() {
   const [totalSeconds, setTotalSeconds] = useState(userWorkMinutes * 60);
   const [textColor, setTextColor] = useState('#000');
   const [sessionCounter, setSessionCounter] = useState(0);
+  const [color1, setColor1] = useState('#4ADEDE');
+  const [color2, setColor2] = useState('#5ADAAE');
   const defaultIframeHtml = `<iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1035841942&color=%23545e81&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/lofi_girl" title="Lofi Girl" target="_blank" style="color: #cccccc; text-decoration: none;">Lofi Girl</a> · <a href="https://soundcloud.com/lofi_girl/4-am-studysession" title="4 A.M Study Session 📚 - [lofi hip hop/chill beats]" target="_blank" style="color: #cccccc; text-decoration: none;">4 A.M Study Session 📚 - [lofi hip hop/chill beats]</a></div>`;
   const [iframeHtml, setIframeHtml] = useState(defaultIframeHtml);
 
@@ -114,13 +116,18 @@ function App() {
     setSeconds(0);
     setIsRunning(false);
   };
+  const setGradients = () => {
+    const app = document.querySelector('.App') as HTMLElement;
+    app.style.setProperty('--color-start', color1);
+    app.style.setProperty('--color-end', color2);
+  };
 
   const switchGreadients = () => {
-    let startColor = '#4ADEDE';
-    let endColor = '#5ADAAE';
+    let startColor = color1;
+    let endColor = color2;
     if (phase === 'work') {
-      startColor = '#5ADAAE';
-      endColor = '#4ADEDE';
+      startColor = color2;
+      endColor = color1;
     }
     const app = document.querySelector('.App') as HTMLElement;
     app.style.setProperty('--color-start', startColor);
@@ -216,9 +223,9 @@ function App() {
     const styleElement = document.createElement('style');
     styleElement.textContent = `
       .App::before {
-        background: linear-gradient(to top, #4ab9de ${
-          progress * 100
-        }%, #4ADEDE ${progress * 100}%);
+        background: linear-gradient(to top, ${color2}  ${
+      progress * 100
+    }%, ${color2}  ${progress * 100}%);
         opacity: 1;
       }
     `;
@@ -231,7 +238,7 @@ function App() {
     return () => {
       document.head.removeChild(styleElement);
     };
-  }, [minutes, seconds, totalSeconds, userWorkMinutes, phase]);
+  }, [minutes, seconds, totalSeconds, userWorkMinutes, phase, color1, color2]);
 
   return (
     <div className='App'>
@@ -267,17 +274,17 @@ function App() {
 
       {/* <h3>Pomodoro Timer</h3> */}
       <div id='control-buttons-container'>
-      <button className='start-button' onClick={toggleTimer}>
-        {isRunning ? 'Pause' : 'Start'}
-      </button>
+        <button className='start-button' onClick={toggleTimer}>
+          {isRunning ? 'Pause' : 'Start'}
+        </button>
 
-      <button className='stop-button' onClick={stopTimer}>
-        Stop
-      </button>
+        <button className='stop-button' onClick={stopTimer}>
+          Stop
+        </button>
 
-      <button className='reset-button' onClick={resetTimer}>
-        Reset
-      </button>
+        <button className='reset-button' onClick={resetTimer}>
+          Reset
+        </button>
       </div>
       <h3>Work Sessions: {workSessions}</h3>
       <div
@@ -327,6 +334,26 @@ function App() {
               +
             </button>
           </div>
+          <label htmlFor='work pahse color'>Work phase color:</label>
+          <input
+            type='color'
+            id='color1'
+            value={color1}
+            onChange={(e) => {
+              setColor1(e.target.value);
+              setGradients();
+            }}
+          />
+          <label htmlFor='break phase color'>Break phase color:</label>
+          <input
+            type='color'
+            id='color2'
+            value={color2}
+            onChange={(e) => {
+              setColor2(e.target.value);
+              setGradients();
+            }}
+          />
         </>
       )}
     </div>
