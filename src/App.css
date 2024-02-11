@@ -51,7 +51,7 @@ label {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 3vh;
+  font-size: 2vh;
   margin: 0.5vh;
   cursor: pointer;
   border-radius: 4px;
@@ -85,6 +85,8 @@ label {
 }
 
 .circle-container {
+  min-width: 250px;
+  min-height: 250px;
   width: 13vw;
   height: 13vw;
   border-radius: 50%;
@@ -95,6 +97,8 @@ label {
 }
 
 .countdown-circle {
+  min-width: 250px;
+  min-height: 250px;
   width: 13vw;
   height: 13vw;
   border-radius: 50%;
@@ -114,12 +118,14 @@ label {
   position: relative;  
   min-width: 250px;
   min-height: 250px;
-  width: 15vw;
-  height: 15vw;
+  width: 25vw;
+  height: 25vw;
 }
 
 .button-container {
   position: absolute;
+  min-width: 250px;
+  min-height: 250px;
   width: 100%;
   height: 100%;
 }
@@ -127,8 +133,8 @@ label {
 .button-container button {
   position: absolute;
   background-color: transparent;
-  width: 3vw;
-  height: 3vw;
+  /* width: 3vw;
+  height: 3vw; */
   top: 50%;
   left: 50%;
   border-radius: 50%;
@@ -139,45 +145,45 @@ label {
   opacity: 0.9;
 }
 .button-0 {
-  transform: translate(-50%, -50%) rotate(-60deg) translate(8.5vw) rotate(60deg);
+  transform: translate(-50%, -50%) rotate(-60deg) translate(9rem) rotate(60deg);
 }
 .button-1 {
-  transform: translate(-50%, -50%) rotate(-30deg) translate(8.5vw) rotate(30deg);
+  transform: translate(-50%, -50%) rotate(-30deg) translate(9rem) rotate(30deg);
 }
 .button-2 {
-  transform: translate(-50%, -50%) rotate(0deg) translate(8.5vw) rotate(0deg);
+  transform: translate(-50%, -50%) rotate(0deg) translate(9rem) rotate(0deg);
 }
 .button-3 {
-  transform: translate(-50%, -50%) rotate(30deg) translate(8.5vw) rotate(-30deg);
+  transform: translate(-50%, -50%) rotate(30deg) translate(9rem) rotate(-30deg);
 }
 .button-4 {
-  transform: translate(-50%, -50%) rotate(60deg) translate(8.5vw) rotate(-60deg);
+  transform: translate(-50%, -50%) rotate(60deg) translate(9rem) rotate(-60deg);
 }
 .button-5 {
-  transform: translate(-50%, -50%) rotate(90deg) translate(8.5vw) rotate(-90deg);
+  transform: translate(-50%, -50%) rotate(90deg) translate(9rem) rotate(-90deg);
 }
 .button-6 {
-  transform: translate(-50%, -50%) rotate(120deg) translate(8.5vw)
+  transform: translate(-50%, -50%) rotate(120deg) translate(9rem)
     rotate(-120deg);
 }
 .button-7 {
-  transform: translate(-50%, -50%) rotate(150deg) translate(8.5vw)
+  transform: translate(-50%, -50%) rotate(150deg) translate(9rem)
     rotate(-150deg);
 }
 .button-8 {
-  transform: translate(-50%, -50%) rotate(180deg) translate(8.5vw)
+  transform: translate(-50%, -50%) rotate(180deg) translate(9rem)
     rotate(-180deg);
 }
 .button-9 {
-  transform: translate(-50%, -50%) rotate(210deg) translate(8.5vw)
+  transform: translate(-50%, -50%) rotate(210deg) translate(9rem)
     rotate(-210deg);
 }
 .button-10 {
-  transform: translate(-50%, -50%) rotate(240deg) translate(8.5vw)
+  transform: translate(-50%, -50%) rotate(240deg) translate(9rem)
     rotate(-240deg);
 }
 .button-11 {
-  transform: translate(-50%, -50%) rotate(270deg) translate(8.5vw)
+  transform: translate(-50%, -50%) rotate(270deg) translate(9rem)
     rotate(-270deg);
 }
 
@@ -195,11 +201,30 @@ label {
   align-items: center;
 }
 
+.phase-display {
+  font-size: 2em;
+  margin: 3.5vw;
+}
+
+#control-buttons-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 @keyframes countdown {
   0% {
     transform: scale(1);
   }
   100% {
     transform: scale(0);
+  }
+}
+
+@media (min-width: 600px) {
+  .timer-container {
+    width: 100%;
+    height: 100%;
   }
 }

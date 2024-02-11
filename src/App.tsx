@@ -266,7 +266,7 @@ function App() {
       <div className='phase-display'>{phase}</div>
 
       {/* <h3>Pomodoro Timer</h3> */}
-
+      <div id='control-buttons-container'>
       <button className='start-button' onClick={toggleTimer}>
         {isRunning ? 'Pause' : 'Start'}
       </button>
@@ -278,7 +278,7 @@ function App() {
       <button className='reset-button' onClick={resetTimer}>
         Reset
       </button>
-
+      </div>
       <h3>Work Sessions: {workSessions}</h3>
       <div
         style={{ position: 'absolute', zIndex: -1 }}
