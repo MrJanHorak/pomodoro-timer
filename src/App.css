@@ -204,6 +204,7 @@ label {
 .phase-display {
   font-size: 2em;
   margin: 3.5vw;
+  margin-top: 50px;
 }
 
 #control-buttons-container {
