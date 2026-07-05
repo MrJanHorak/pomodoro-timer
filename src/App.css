@@ -1,3 +1,29 @@
+/* Registering --progress lets supporting browsers (current Chrome, Edge,
+   Firefox, Safari) treat it as a typed, interpolatable value instead of an
+   opaque string. Combined with the transition below, the gradient's split
+   point glides between each 1-second update instead of jumping — this is
+   what actually produces the "ultra smooth" effect, since the JS still only
+   updates the value once per second but the browser animates the change
+   in between. Older/unsupported browsers just fall back to the previous
+   stepped behavior, so this is a safe progressive enhancement. */
+@property --progress {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 0%;
+}
+
+@property --color-start {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #4adede;
+}
+
+@property --color-end {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #5adaae;
+}
+
 .App {
   text-align: center;
   padding: 0.2vw;
@@ -14,6 +40,7 @@
     var(--color-start) var(--progress),
     var(--color-end) var(--progress)
   );
+  transition: --progress 1s linear, --color-start 1s ease, --color-end 1s ease;
 }
 
 h3 {
@@ -228,4 +255,72 @@ label {
     width: 100%;
     height: 100%;
   }
+}
+
+#utility-buttons-container {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+#utility-buttons-container button {
+  padding: 0.4em 0.8em;
+  border-radius: 4px;
+}
+
+.music-attribution {
+  font-size: 0.7em;
+  color: #eee;
+  margin-top: 0.2em;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: #1a1f36;
+  color: white;
+  max-width: 420px;
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: left;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 1.3em;
+}
+
+.modal-content ul {
+  padding-left: 1.2em;
+  line-height: 1.5;
+  font-size: 0.85em;
+}
+
+.modal-content li {
+  margin-bottom: 0.6em;
+}
+
+.modal-close-button {
+  display: block;
+  margin: 1rem auto 0;
+  background-color: #2e8b57;
+  color: white;
+  border: none;
+  padding: 0.6em 1.4em;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
 }

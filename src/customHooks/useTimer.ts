@@ -22,6 +22,11 @@ export const useTimer = (
     setMinutes(phase === 'work' ? userWorkMinutes : userBreakMinutes);
   }, [userWorkMinutes, userBreakMinutes, phase]);
 
+  // Tracks whether this is the initial mount so the phase-change effect
+  // below doesn't fire on load (previously this recorded a "completed"
+  // session and tried to play a sound before the user ever pressed Start).
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
     let interval: number;
 
@@ -46,18 +51,13 @@ export const useTimer = (
   }, [minutes, seconds, isRunning, phase]);
 
   useEffect(() => {
-    if (phase === 'work') {
-      setMinutes(userWorkMinutes);
-    } else {
-      setMinutes(userBreakMinutes);
+    // Skip the very first run: a phase "change" hasn't actually happened
+    // yet on mount, so we shouldn't count a session or play a sound.
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
     }
-  }, [phase]);
-
-  useEffect(() => {
     onComplete();
-  }, [phase]);
-
-  useEffect(() => {
     switchTimer();
   }, [phase]);
 

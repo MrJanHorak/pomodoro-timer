@@ -6,103 +6,88 @@ import beepingSound from './assets/sounds/Quick-beep-sound-effect.mp3';
 
 // custom hooks
 import { useTimer } from './customHooks/useTimer.ts';
+import { useGradientColors } from './customHooks/useGradientColors.ts';
+import { useWorkBreakSettings } from './customHooks/useWorkBreakSettings.ts';
+import { useSessionTracking } from './customHooks/useSessionTracking.ts';
+import { useBeepSound } from './customHooks/useBeepSound.ts';
+import { useDocumentChrome } from './customHooks/useDocumentChrome.ts';
+import { useInstructionsModal } from './customHooks/useInstructionsModal.ts';
 
-// Function to create a dynamic SVG
-const createProgressSVG = (progress: number, color: string) => {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <circle cx="16" cy="16" r="14" stroke="#999" stroke-width="6" fill="none" />
-  <circle cx="16" cy="16" r="14" stroke="${color}" stroke-width="6" fill="none" stroke-dasharray="${
-    progress * 100
-  }, 100" transform="rotate(-90 16 16)" />
-</svg>`;
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
-};
-
-// Function to set the favicon
-const setFavicon = (url: string) => {
-  const link =
-    (document.querySelector("link[rel*='icon']") as HTMLLinkElement) ||
-    document.createElement('link');
-  link.type = 'image/x-icon';
-  link.rel = 'shortcut icon';
-  link.href = url;
-  document.getElementsByTagName('head')[0].appendChild(link);
-};
+// components & data
+import InstructionsModal from './components/InstructionsModal.tsx';
+import { MUSIC_OPTIONS, buildSoundCloudSrc } from './customHooks/musicOptions.ts';
 
 function App() {
   const [showSettings, setShowSettings] = useState(false);
-  const [displayTime, setDisplayTime] = useState('');
   const [isRunning, setIsRunning] = useState(false);
-  const [isWorkTime, setIsWorkTime] = useState(true);
-  const [workSessions, setWorkSessions] = useState(0);
-  const [userWorkMinutes, setUserWorkMinutes] = useState(25);
-  const [userBreakMinutes, setUserBreakMinutes] = useState(5);
-  const [totalSeconds, setTotalSeconds] = useState(userWorkMinutes * 60);
-  const [textColor, setTextColor] = useState('#000');
-  const [sessionCounter, setSessionCounter] = useState(0);
-  const [color1, setColor1] = useState('#4ADEDE');
-  const [color2, setColor2] = useState('#5ADAAE');
-  const defaultIframeHtml = `<iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1035841942&color=%23545e81&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/lofi_girl" title="Lofi Girl" target="_blank" style="color: #cccccc; text-decoration: none;">Lofi Girl</a> · <a href="https://soundcloud.com/lofi_girl/4-am-studysession" title="4 A.M Study Session 📚 - [lofi hip hop/chill beats]" target="_blank" style="color: #cccccc; text-decoration: none;">4 A.M Study Session 📚 - [lofi hip hop/chill beats]</a></div>`;
-  const [iframeHtml, setIframeHtml] = useState(defaultIframeHtml);
+  const [musicIndex, setMusicIndex] = useState(0); // 0 = "No music"
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIframeHtml(event.target.value);
-  };
+  const { workSessions, recordCompletedPhase, recordPhaseSwitch } =
+    useSessionTracking();
+  const playBeep = useBeepSound(beepingSound);
 
   const switchTimer = () => {
-    setIsWorkTime((prevIsWorkTime) => {
-      switchGreadients();
-      const newIsWorkTime = !prevIsWorkTime;
-      const newMinutes = newIsWorkTime ? userWorkMinutes : userBreakMinutes;
-      setMinutes(newMinutes);
-      setTotalSeconds(newMinutes * 60);
-      return newIsWorkTime;
-    });
-    setSessionCounter((prevCounter) => prevCounter + 1);
-    playSound();
-    if (sessionCounter === 2) {
-      setWorkSessions((prevSessions) => prevSessions + 1);
-      setSessionCounter(0);
-    }
+    recordPhaseSwitch();
+    playBeep();
   };
 
-  const completeWorkSession = () => {
-    const today = new Date().toISOString().split('T')[0];
-    const currentCount = localStorage.getItem(today);
-    localStorage.setItem(
-      today,
-      currentCount ? String(Number(currentCount) + 1) : '1'
-    );
-  };
-
-  const getWorkSessionsForDay = (date: string) => {
-    return Number(localStorage.getItem(date)) || 0;
-  };
+  // Settings must be resolved before useTimer, since useTimer needs the
+  // work/break minute values as inputs.
+  const {
+    userWorkMinutes,
+    userBreakMinutes,
+    handleWorkMinutesChange,
+    handleBreakMinutesChange,
+    addMinute,
+    subtractMinute,
+    addMinuteToBreak,
+    subtractMinuteFromBreak,
+  } = useWorkBreakSettings({ isRunning });
 
   const { minutes, seconds, setMinutes, setSeconds, phase, setPhase } =
     useTimer(
       userWorkMinutes,
       userBreakMinutes,
       isRunning,
-      completeWorkSession,
+      recordCompletedPhase,
       switchTimer
     );
 
-  const audio = new Audio(beepingSound);
-  const circleColor = phase === 'work' ? 'green' : 'yellow';
+  // Keeps the live countdown display in sync when the user edits "Work
+  // Minutes" directly (typing, or the +/- buttons), matching the original
+  // behavior of updating the on-screen clock immediately rather than only
+  // on the next phase change.
+  useEffect(() => {
+    setMinutes(userWorkMinutes);
+  }, [userWorkMinutes]);
 
-  const playSound = () => {
-    audio.play();
-  };
+  const { color1, setColor1, color2, setColor2 } = useGradientColors(phase);
 
-  const toggleTimer = () => {
-    setIsRunning(!isRunning);
-  };
+  const displayTime = useDocumentChrome({
+    phase,
+    minutes,
+    seconds,
+    userWorkMinutes,
+    userBreakMinutes,
+  });
 
-  const setTimer = (minutes: number) => {
-    setMinutes(minutes);
-    setTotalSeconds(minutes * 60);
-    setUserWorkMinutes(minutes);
+  const { showInstructions, closeInstructions, openInstructions } =
+    useInstructionsModal();
+
+  // Derived instead of stored: this used to be its own piece of state kept
+  // in sync from six different call sites (every settings handler, the
+  // preset buttons, and the phase-switch logic). It's fully determined by
+  // phase + the two minute settings, so there's nothing left to keep in
+  // sync manually.
+  const totalSeconds =
+    (phase === 'work' ? userWorkMinutes : userBreakMinutes) * 60;
+
+  const circleColor = phase === 'work' ? color1 : color2;
+
+  const toggleTimer = () => setIsRunning(!isRunning);
+
+  const setTimer = (presetMinutes: number) => {
+    setMinutes(presetMinutes);
     setSeconds(0);
     setIsRunning(false);
   };
@@ -111,140 +96,16 @@ function App() {
 
   const resetTimer = () => {
     setMinutes(userWorkMinutes);
-    setUserBreakMinutes(userBreakMinutes);
     setPhase('work');
     setSeconds(0);
     setIsRunning(false);
   };
-  const setGradients = () => {
-    const app = document.querySelector('.App') as HTMLElement;
-    app.style.setProperty('--color-start', color1);
-    app.style.setProperty('--color-end', color2);
-  };
-
-  const switchGreadients = () => {
-    let startColor = color1;
-    let endColor = color2;
-    if (phase === 'work') {
-      startColor = color2;
-      endColor = color1;
-    }
-    const app = document.querySelector('.App') as HTMLElement;
-    app.style.setProperty('--color-start', startColor);
-    app.style.setProperty('--color-end', endColor);
-  };
-
-  const handleWorkMinutesChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const newValue = parseInt(event.target.value);
-    if (newValue >= 0) {
-      setUserWorkMinutes(newValue);
-      setMinutes(newValue);
-      setTotalSeconds(newValue * 60);
-    }
-  };
-
-  const handleBreakMinutesChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const newValue = parseInt(event.target.value);
-    if (newValue >= 0) {
-      setUserBreakMinutes(newValue);
-    }
-  };
-
-  const addMinute = () => {
-    if (!isRunning) {
-      setUserWorkMinutes((prevMinutes) => prevMinutes + 1);
-      setMinutes((prevMinutes) => prevMinutes + 1);
-      setTotalSeconds((prevSeconds) => prevSeconds + 60);
-    }
-  };
-
-  const subtractMinute = () => {
-    if (!isRunning) {
-      if (minutes > 0) {
-        setUserWorkMinutes((prevMinutes) => prevMinutes - 1);
-        setMinutes((prevMinutes) => prevMinutes - 1);
-        setTotalSeconds((prevSeconds) => prevSeconds - 60);
-      }
-    }
-  };
-
-  const addMinuteToBreak = () => {
-    if (!isRunning) {
-      setUserBreakMinutes((prevMinutes) => prevMinutes + 1);
-    }
-  };
-
-  const subtractMinuteFromBreak = () => {
-    if (!isRunning) {
-      if (userBreakMinutes > 0) {
-        setUserBreakMinutes((prevMinutes) => prevMinutes - 1);
-      }
-    }
-  };
-
-  useEffect(() => {
-    let progress: number;
-    const faviconColor = phase === 'work' ? 'red' : 'yellow';
-    if (phase === 'work') {
-      progress =
-        (userWorkMinutes * 60 - (minutes * 60 + seconds)) /
-        (userWorkMinutes * 60);
-    } else {
-      progress =
-        (userBreakMinutes * 60 - (minutes * 60 + seconds)) /
-        (userBreakMinutes * 60);
-    }
-
-    // const countdownElement = document.querySelector(
-    //   '.countdown'
-    // ) as HTMLElement;
-    // if (countdownElement) {
-    //   countdownElement.style.animationDuration = `${userWorkMinutes * 60}s`;
-    // }
-    setDisplayTime(
-      `${minutes.toString().padStart(2, '0')}:${seconds
-        .toString()
-        .padStart(2, '0')}`
-    );
-
-    document.title = `${minutes.toString().padStart(2, '0')}:${seconds
-      .toString()
-      .padStart(2, '0')} - Pomodoro Timer`;
-
-    const svg = createProgressSVG(progress, faviconColor);
-    setFavicon(svg);
-
-    const app = document.querySelector('.App') as HTMLElement;
-
-    const styleElement = document.createElement('style');
-    styleElement.textContent = `
-      .App::before {
-        background: linear-gradient(to top, ${color2}  ${
-      progress * 100
-    }%, ${color2}  ${progress * 100}%);
-        opacity: 1;
-      }
-    `;
-
-    app.style.setProperty('--timer-duration', `${userWorkMinutes * 60}s`);
-    app.style.setProperty('--progress', `${progress * 100}%`);
-
-    document.head.appendChild(styleElement);
-
-    return () => {
-      document.head.removeChild(styleElement);
-    };
-  }, [minutes, seconds, totalSeconds, userWorkMinutes, phase, color1, color2]);
 
   return (
     <div className='App'>
       <div className='timer-container'>
         <div className='circle-container'>
-          <div className='button-container' style={{ color: textColor }}>
+          <div className='button-container'>
             {[5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60].map(
               (minute, index) => (
                 <button
@@ -272,7 +133,6 @@ function App() {
 
       <div className='phase-display'>{phase}</div>
 
-      {/* <h3>Pomodoro Timer</h3> */}
       <div id='control-buttons-container'>
         <button className='start-button' onClick={toggleTimer}>
           {isRunning ? 'Pause' : 'Start'}
@@ -287,30 +147,63 @@ function App() {
         </button>
       </div>
       <h3>Work Sessions: {workSessions}</h3>
-      <div
-        style={{ position: 'absolute', zIndex: -1 }}
-        dangerouslySetInnerHTML={{ __html: iframeHtml }}
-      />
-      <button onClick={() => setShowSettings(!showSettings)}>
-        {showSettings ? 'Hide Settings' : 'Show Settings'}
-      </button>
+
+      {musicIndex !== 0 && (
+        <div style={{ position: 'absolute', zIndex: -1 }}>
+          <iframe
+            key={musicIndex}
+            width='100%'
+            height='166'
+            title={MUSIC_OPTIONS[musicIndex].label}
+            allow='autoplay'
+            src={buildSoundCloudSrc(MUSIC_OPTIONS[musicIndex].trackUrl)}
+          />
+          <p className='music-attribution'>
+            Playing: {MUSIC_OPTIONS[musicIndex].label} (via SoundCloud)
+          </p>
+        </div>
+      )}
+
+      <div id='utility-buttons-container'>
+        <button onClick={() => setShowSettings(!showSettings)}>
+          {showSettings ? 'Hide Settings' : 'Show Settings'}
+        </button>
+        <button aria-label='Show instructions' onClick={openInstructions}>
+          ?
+        </button>
+      </div>
+
       {showSettings && (
         <>
+          <label htmlFor='music-select'>Focus music</label>
           <div>
-            <input
-              type='text'
-              onChange={handleInputChange}
-              placeholder='Enter new iframe HTML'
-            />
+            <select
+              id='music-select'
+              value={musicIndex}
+              onChange={(e) => setMusicIndex(Number(e.target.value))}
+            >
+              {MUSIC_OPTIONS.map((option, index) => (
+                <option key={option.label} value={index}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
+
           <label htmlFor='work-minutes'>Work Minutes</label>
           <div className='set-work-minutes-container'>
-            <button className={'plus-minus'} onClick={subtractMinute}>
+            <button
+              className={'plus-minus'}
+              onClick={() => subtractMinute(minutes)}
+            >
               -
             </button>
 
             <input
+              id='work-minutes'
               type='number'
+              min={1}
+              max={180}
               value={userWorkMinutes}
               onChange={handleWorkMinutesChange}
             />
@@ -326,7 +219,10 @@ function App() {
               -
             </button>
             <input
+              id='break-minutes'
               type='number'
+              min={1}
+              max={60}
               value={userBreakMinutes}
               onChange={handleBreakMinutesChange}
             />
@@ -334,28 +230,24 @@ function App() {
               +
             </button>
           </div>
-          <label htmlFor='work pahse color'>Work phase color:</label>
+          <label htmlFor='color1'>Work phase color:</label>
           <input
             type='color'
             id='color1'
             value={color1}
-            onChange={(e) => {
-              setColor1(e.target.value);
-              setGradients();
-            }}
+            onChange={(e) => setColor1(e.target.value)}
           />
-          <label htmlFor='break phase color'>Break phase color:</label>
+          <label htmlFor='color2'>Break phase color:</label>
           <input
             type='color'
             id='color2'
             value={color2}
-            onChange={(e) => {
-              setColor2(e.target.value);
-              setGradients();
-            }}
+            onChange={(e) => setColor2(e.target.value)}
           />
         </>
       )}
+
+      {showInstructions && <InstructionsModal onClose={closeInstructions} />}
     </div>
   );
 }
