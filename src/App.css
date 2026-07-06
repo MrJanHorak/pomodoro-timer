@@ -260,14 +260,32 @@ label {
 #utility-buttons-container {
   display: flex;
   flex-direction: row;
-  gap: 0.5rem;
+  gap: 1.2rem;
   align-items: center;
   justify-content: center;
+  margin-top: 10px;
 }
 
 #utility-buttons-container button {
   padding: 0.4em 0.8em;
   border-radius: 4px;
+}
+
+#utility-buttons-container .icon-button {
+  width: 2.55rem;
+  height: 2.55rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  line-height: 1;
+  font-size: 1.2rem;
+}
+
+#utility-buttons-container .icon-button svg {
+  width: 1.15rem;
+  height: 1.15rem;
 }
 
 .music-attribution {
@@ -319,8 +337,199 @@ label {
   background-color: #2e8b57;
   color: white;
   border: none;
-  padding: 0.6em 1.4em;
-  border-radius: 4px;
+  min-width: 8.5rem;
+  min-height: 2.6rem;
+  padding: 0.6em 1.2em;
+  border-radius: 999px;
   cursor: pointer;
   font-size: 1em;
+}
+
+.settings-modal {
+  max-width: 560px;
+  max-height: min(88vh, 760px);
+  overflow-y: auto;
+  padding: 1.25rem 1.25rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #161d37;
+}
+
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.settings-section {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 0.8rem;
+}
+
+.settings-section-title {
+  margin: 0 0 0.4rem;
+  font-size: 1em;
+  font-weight: 700;
+}
+
+.settings-helper {
+  margin: 0 0 0.5rem;
+  color: #c9d2ef;
+  font-size: 0.8em;
+}
+
+.settings-content label {
+  position: static;
+  top: auto;
+  font-size: 0.9em;
+}
+
+.settings-select {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #3b466d;
+  background-color: #11162a;
+  color: #eef3ff;
+  padding: 0.55rem 0.65rem;
+  font-size: 0.9em;
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.55rem;
+}
+
+.settings-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.settings-stepper .plus-minus {
+  margin: 0;
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  line-height: 1;
+  background-color: #58c6e6;
+}
+
+.settings-number-input {
+  width: 4.2rem;
+  text-align: center;
+  border-radius: 8px;
+  border: 1px solid #3b466d;
+  background-color: #11162a;
+  color: #eef3ff;
+  padding: 0.45rem 0.4rem;
+  font-size: 0.95em;
+}
+
+.settings-color-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.settings-color-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.settings-color-item input[type='color'] {
+  width: 100%;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.settings-modal .modal-close-button {
+  width: 100%;
+  margin-top: 0.8rem;
+  padding: 0.72rem 1rem;
+  font-weight: 600;
+}
+
+.settings-modal :is(button, input, select):focus-visible {
+  outline: 2px solid #7ccfff;
+  outline-offset: 2px;
+}
+
+.app-footer {
+  position: fixed;
+  bottom: 1.7rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(12, 18, 35, 0.34);
+  backdrop-filter: blur(2px);
+  font-size: 0.72em;
+  color: rgba(240, 246, 255, 0.72);
+}
+
+.footer-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.footer-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 999px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.footer-links a:hover,
+.footer-links a:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.95);
+  text-decoration: none;
+}
+
+.footer-icon {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.footer-divider {
+  width: 1px;
+  height: 0.85rem;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.footer-consent {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding-left: 0.35rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer-consent button {
+  padding: 0.18rem 0.46rem;
+  border-radius: 999px;
+  background: rgba(143, 189, 247, 0.2);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.9em;
 }

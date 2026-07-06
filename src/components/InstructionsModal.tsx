@@ -19,20 +19,20 @@ const InstructionsModal = ({ onClose }: InstructionsModalProps) => {
           </li>
           <li>
             <strong>Stop</strong> pauses the timer in place; <strong>Reset</strong>{' '}
-            returns it to the start of a work session.
+            returns it to the start of a focus session.
           </li>
           <li>
             The numbers around the circle (5, 10, 15…) are buttons — click
-            one to jump straight to that many work minutes.
+            one to jump straight to that many focus minutes.
           </li>
           <li>
-            <strong>Show Settings</strong> lets you set custom work/break
+            <strong>Show Settings</strong> lets you set custom focus/break
             lengths, pick focus music, and choose the colors used for each
             phase.
           </li>
           <li>
             Focus music is optional and off by default — enable it from
-            Settings if you'd like background audio while you work.
+            Settings if you'd like background audio while you focus.
           </li>
         </ul>
         <button className='modal-close-button' onClick={onClose}>

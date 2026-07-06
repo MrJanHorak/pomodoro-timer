@@ -48,7 +48,7 @@ export const useTimer = (
       }
     }
     return () => window.clearInterval(interval);
-  }, [minutes, seconds, isRunning, phase]);
+  }, [minutes, seconds, isRunning, phase, userWorkMinutes, userBreakMinutes]);
 
   useEffect(() => {
     // Skip the very first run: a phase "change" hasn't actually happened
@@ -59,7 +59,7 @@ export const useTimer = (
     }
     onComplete();
     switchTimer();
-  }, [phase]);
+  }, [phase, onComplete, switchTimer]);
 
   return { minutes, setMinutes, seconds, setSeconds, phase, setPhase };
 };
