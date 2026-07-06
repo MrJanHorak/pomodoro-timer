@@ -5,6 +5,49 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A clean Pomodoro focus timer with customizable focus/break lengths, ambient music, and a distraction-free interface."
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#161d37" />
+    <link
+      rel="canonical"
+      href="https://focus-music-timer.netlify.app/"
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Pomodoro Timer" />
+    <meta property="og:title" content="Pomodoro Focus Timer" />
+    <meta
+      property="og:description"
+      content="Stay focused with a clean Pomodoro timer, custom durations, and optional focus music."
+    />
+    <meta
+      property="og:url"
+      content="https://focus-music-timer.netlify.app/"
+    />
+    <meta
+      property="og:image"
+      content="https://focus-music-timer.netlify.app/og-image.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Pomodoro Focus Timer preview with a clean timer interface."
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Pomodoro Focus Timer" />
+    <meta
+      name="twitter:description"
+      content="A clean Pomodoro timer for deep focus with custom sessions and optional ambient music."
+    />
+    <meta
+      name="twitter:image"
+      content="https://focus-music-timer.netlify.app/og-image.png"
+    />
     <!-- Google tag (gtag.js) -->
     <script
       async
@@ -16,10 +59,27 @@
         dataLayer.push(arguments);
       }
       gtag('js', new Date());
+      gtag('consent', 'default', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+      });
 
       gtag('config', 'G-Z27C3SXSPF');
     </script>
-    <title>Pomodoro Timer</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Pomodoro Focus Timer",
+        "applicationCategory": "ProductivityApplication",
+        "operatingSystem": "Any",
+        "url": "https://focus-music-timer.netlify.app/",
+        "description": "A clean Pomodoro focus timer with customizable focus and break durations, optional ambient music, and minimal UI."
+      }
+    </script>
+    <title>Pomodoro Focus Timer</title>
   </head>
   <body>
     <div id="root"></div>
